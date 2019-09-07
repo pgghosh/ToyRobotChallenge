@@ -1,11 +1,15 @@
 package interview.test.zone.toyrobot;
 
 public class RobotPosition {
-    private final int x;
-    private final int y;
-    private final Direction direction;
+    private int x;
+    private int y;
+    private Direction direction;
 
     public RobotPosition(int x, int y, Direction direction) {
+        setPosition(x, y, direction);
+    }
+
+    public void setPosition(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -25,10 +29,10 @@ public class RobotPosition {
 
     @Override
     public String toString() {
-        return "RobotPosition{" +
-                "x=" + x +
-                ", y=" + y +
-                ", direction=" + direction +
+        return '{' +
+                "x : " + x +
+                ", y : " + y +
+                ", direction : \"" + direction + "\"" +
                 '}';
     }
 }

@@ -2,6 +2,7 @@ package interview.test.zone.toyrobot;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,33 +27,31 @@ class ToyTableGridServiceTest {
     private static final int MAX_X = 5;
     private static final int MAX_Y = 5;
 
-    private static final EnumMap<Direction, Direction> moveRightmap = new EnumMap<>(Direction.class);
-    private static final EnumMap<Direction, Direction> moveLeftmap = new EnumMap<>(Direction.class);
-
+    private static final EnumMap<Direction, Direction> MOVE_RIGHT_MAP = new EnumMap<>(Direction.class);
+    private static final EnumMap<Direction, Direction> MOVE_LEFT_MAP = new EnumMap<>(Direction.class);
 
     private ToyRobotService toyRobotService;
 
     @BeforeAll
     static void setUpEnumMaps() {
-        moveRightmap.put(SOUTH, WEST);
-        moveRightmap.put(WEST, NORTH);
-        moveRightmap.put(NORTH, EAST);
-        moveRightmap.put(EAST, SOUTH);
+        MOVE_RIGHT_MAP.put(SOUTH, WEST);
+        MOVE_RIGHT_MAP.put(WEST, NORTH);
+        MOVE_RIGHT_MAP.put(NORTH, EAST);
+        MOVE_RIGHT_MAP.put(EAST, SOUTH);
 
-        moveLeftmap.put(SOUTH, EAST);
-        moveLeftmap.put(EAST, NORTH);
-        moveLeftmap.put(NORTH, WEST);
-        moveLeftmap.put(WEST, SOUTH);
+        MOVE_LEFT_MAP.put(SOUTH, EAST);
+        MOVE_LEFT_MAP.put(EAST, NORTH);
+        MOVE_LEFT_MAP.put(NORTH, WEST);
+        MOVE_LEFT_MAP.put(WEST, SOUTH);
     }
 
     @BeforeEach
     void setUp() {
         toyRobotService = new ToyRobotService(MAX_X, MAX_Y);
-
     }
 
     @ParameterizedTest(name = "{index} {0}")
-    @MethodSource("positions")
+    @MethodSource("allPositions")
     void shouldPerformPlaceCommandWhenRobotIsPlacedAndDestinationWithinGrid(String testName, RobotPosition destination) {
 
         RobotPosition randomPositionWithinGrid = getRandomPositionInsideGrid();
@@ -78,7 +77,7 @@ class ToyTableGridServiceTest {
     }
 
     @ParameterizedTest(name = "{index} {0}")
-    @MethodSource("positions")
+    @MethodSource("allPositions")
     void shouldPerformPlaceCommandWhenRobotIsNotPlacedAndDestinationWithinGrid(String testName, RobotPosition destination) {
 
         toyRobotService.place(destination.getX(), destination.getY(), destination.getDirection().name());
@@ -142,7 +141,7 @@ class ToyTableGridServiceTest {
 
         assertThat(robotPosition.getX(), is(initialPosition.getX()));
         assertThat(robotPosition.getY(), is(initialPosition.getY()));
-        assertThat(robotPosition.getDirection(), is(moveRightmap.get(initialPosition.getDirection())));
+        assertThat(robotPosition.getDirection(), is(MOVE_RIGHT_MAP.get(initialPosition.getDirection())));
 
     }
 
@@ -157,8 +156,42 @@ class ToyTableGridServiceTest {
 
         assertThat(robotPosition.getX(), is(initialPosition.getX()));
         assertThat(robotPosition.getY(), is(initialPosition.getY()));
-        assertThat(robotPosition.getDirection(), is(moveLeftmap.get(initialPosition.getDirection())));
+        assertThat(robotPosition.getDirection(), is(MOVE_LEFT_MAP.get(initialPosition.getDirection())));
 
+    }
+
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("validPositions")
+    void shouldGetReportOfPositionWhenRobotIsPlaced(String testName, RobotPosition initialPosition) throws Exception {
+        toyRobotService.place(initialPosition.getX(), initialPosition.getY(), initialPosition.getDirection().name());
+
+        String report = toyRobotService.report();
+
+        assertThat(report, is("{x : " + initialPosition.getX() + ", y : " + initialPosition.getY() + ", direction : \"" + initialPosition.getDirection()+"\"}"));
+    }
+
+    @Test
+    void shouldGetEmptyStringForReportCommandWhenRobotNotPlaced() {
+        String report = toyRobotService.report();
+        assertThat(report, is(""));
+    }
+
+    @Test
+    void shouldIgnoreMoveCommandWhenRobotIsNotPlaced() {
+        toyRobotService.move();
+        assertThat(toyRobotService.getTableGrid().getRobotPosition(), is(nullValue()));
+    }
+
+    @Test
+    void shouldIgnoreRightCommandWhenRobotIsNotPlaced() {
+        toyRobotService.right();
+        assertThat(toyRobotService.getTableGrid().getRobotPosition(), is(nullValue()));
+    }
+
+    @Test
+    void shouldIgnoreLeftCommandWhenRobotIsNotPlaced() {
+        toyRobotService.left();
+        assertThat(toyRobotService.getTableGrid().getRobotPosition(), is(nullValue()));
     }
 
     static Stream<Arguments> validPositions() {
@@ -178,15 +211,11 @@ class ToyTableGridServiceTest {
                 .flatMap(Function.identity())
                 .flatMap(Function.identity());
     }
+
     private RobotPosition getRandomPositionInsideGrid() {
         Random rand = new Random();
         Direction[] directions = Direction.values();
         return new RobotPosition(rand.nextInt(MAX_X), rand.nextInt(MAX_Y), directions[rand.nextInt(directions.length)]);
-    }
-
-    public static void main(String[] args) {
-        ToyTableGridServiceTest test = new ToyTableGridServiceTest();
-        System.out.println(test.getRandomPositionInsideGrid());
     }
 
 }
