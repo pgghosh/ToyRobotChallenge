@@ -1,5 +1,8 @@
-package interview.test.zone.toyrobot;
+package interview.test.zone.toyrobot.service;
 
+import interview.test.zone.toyrobot.model.Direction;
+import interview.test.zone.toyrobot.model.RobotPosition;
+import interview.test.zone.toyrobot.service.ToyRobotService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static interview.test.zone.toyrobot.Direction.*;
+import static interview.test.zone.toyrobot.model.Direction.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

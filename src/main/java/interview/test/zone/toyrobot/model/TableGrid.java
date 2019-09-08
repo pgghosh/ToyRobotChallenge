@@ -1,4 +1,4 @@
-package interview.test.zone.toyrobot;
+package interview.test.zone.toyrobot.model;
 
 public class TableGrid {
 
