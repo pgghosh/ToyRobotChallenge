@@ -9,13 +9,13 @@ The project is a gradle project and to build it run
 
 `./gradlew clean build`
 
-##Assumptions
+## Assumptions
 Certain assumptions have been made when designing the solution. They are
 * Because the robot should not destroy itself due to any operation that moves it off the grid, any such operation is termed as invalid and the robot remains in the same position as it was before the operation.
 * The implementation has been done with it being a service in mind and any output which in this case is from the report command, will provide the response in JSON format. The report command will return the current state of the robot as a JSON response instead of printing it. It is upto the caller to use it in whatever it way it deems necessary.
  
 ## Reference application
-A reference application which is a client of the implemented ToyRobotService issues commands against the service based on a commands defined in a file. This application is run against the testcase files defined in the resources directory. In this application we print the repose given by the report command to standard output.
+A reference application which is a client of the implemented ToyRobotService issues commands against the service based on a commands defined in a file. This application is run against the testcase files defined in the resources directory. In this application we print the report given by the report command to standard output.
 
 To run the reference application from the project home directory execute the command
 
